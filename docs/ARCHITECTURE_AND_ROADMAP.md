@@ -16,7 +16,7 @@ The [Phase Development](PHASE_DEVELOPMENT.md) document defines progression and e
 
 ## 2. Explicit engineering assumptions
 
-- **Primary target:** Android Samsung device with around 8 GB RAM previously specified. Exact processor, usable RAM, Android version and background activity policies require measurement. Use **Android/Kotlin/Jetpack Compose** for UI as the provisional approach; validate SDK compatibility.
+- **Primary target:** Android Samsung device with around 6 GB RAM previously specified. Exact processor, usable RAM, Android version and background activity policies require measurement. Use **Android/Kotlin/Jetpack Compose** for UI as the provisional approach; validate SDK compatibility.
 - **Development / secondary target:** Older Windows laptop with Intel Core i3-8130U, 32 GB RAM, Intel UHD 620. Design no mandatory GPU dependency.
 - **Inference:** Quantized local Qwen candidates (Qwen3-0.6B and Qwen3.5-0.8B), selected by measured response quality, tokens/s, thermal impact, native RAM and task results. Do not assume both work in the same backend without testing. Candidate engine: pinned llama.cpp build/Android integration.
 - **Data:** SQLite with FTS5 where supported; optional compact vector retrieval only when quality tests justify its cost. Device-private storage, protected secrets, appropriate encryption and visible backup/export controls.
