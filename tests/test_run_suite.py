@@ -71,3 +71,32 @@ class BenchmarkTests(unittest.TestCase):
             with patch("run_suite.query_ollama") as mocked:
                 self.assertEqual(run(args), 0)
                 mocked.assert_not_called()
+
+    def test_math_semantics_separate_from_format(self):
+        from run_suite import format_valid, semantic_correct
+        case = next(c for c in build_cases() if c.case_id == "arithmetic-012")
+        self.assertEqual(case.expected, "71")
+        self.assertFalse(format_valid(case, "61 + 10 = 71"))
+        self.assertTrue(semantic_correct(case, "61 + 10 = 71"))
+        self.assertFalse(semantic_correct(case, "61 + 10 = 72"))
+        record_result = record(case, "off", "qwen3:0.6b",
+                               {"response": "61 + 10 = 71", "done_reason": "stop"})
+        self.assertFalse(record_result["correct"])
+        self.assertTrue(record_result["semantic_correct"])
+        self.assertEqual(record_result["outcome"], "format_failure")
+
+    def test_no_final_separate_from_wrong_answer(self):
+        case = build_cases()[0]
+        entry = record(case, "on", "qwen3:0.6b",
+                       {"response": "", "thinking": "Need to reason carefully.",
+                        "done_reason": "length", "total_duration": 6000000000,
+                        "eval_duration": 5000000000, "eval_count": 192})
+        self.assertEqual(entry["status"], "no_final_answer")
+        self.assertEqual(entry["outcome"], "no_final_at_limit")
+        self.assertEqual(entry["thinking_characters"], 25)
+        summary = summarize([entry], version="v1.1", model="qwen3:0.6b", modes=["on"])
+        self.assertEqual(summary["modes"]["on"]["no_final_answers"], 1)
+        self.assertEqual(summary["modes"]["on"]["at_limit_no_final"], 1)
+        self.assertEqual(summary["modes"]["on"]["errors"], 0)
+        self.assertIsNone(summary["modes"]["on"]["answered_accuracy"])
+
