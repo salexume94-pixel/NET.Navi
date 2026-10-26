@@ -13,7 +13,8 @@ NET.Navi is an offline-first, operator-controlled AI companion inspired by *Mega
 
 ## Local Qwen evaluation
 
-- [Ollama benchmark smoke test](tools/benchmark/README.md) — local Qwen3-0.6B correctness and speed check, using only Python's standard library.
+- [Automated Qwen benchmark](tools/benchmark/README.md) — 100 narrow evaluation cases, thinking-on/off comparison, incremental results, resume support, and one-command local execution with `run-benchmark.cmd`.
+- [Ollama smoke test](tools/benchmark/smoke_test.py) — single-case local Qwen correctness and speed check.
 - [Regression tests](tests/test_smoke_test.py) — deterministic offline checks for the scoring logic. GitHub Actions does not train or run Qwen.
 
-**Next milestone:** Expand the measured Qwen baseline with held-out evaluation cases while keeping Nora.EXE's Pokémon learning laboratory independent of the NET.Navi language model.
+**Next milestone:** Run the frozen baseline locally, review failures, and develop a **separate** training dataset without leaking evaluation questions into training. The Nora.EXE Pokémon laboratory remains independent of NET.Navi's language model.

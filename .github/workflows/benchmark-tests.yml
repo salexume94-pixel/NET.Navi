@@ -4,12 +4,14 @@ on:
   push:
     paths:
       - "tools/benchmark/**"
-      - "tests/test_smoke_test.py"
+      - "tests/**"
+      - "run-benchmark.cmd"
       - ".github/workflows/benchmark-tests.yml"
   pull_request:
     paths:
       - "tools/benchmark/**"
-      - "tests/test_smoke_test.py"
+      - "tests/**"
+      - "run-benchmark.cmd"
       - ".github/workflows/benchmark-tests.yml"
   workflow_dispatch:
 
@@ -21,5 +23,5 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Verify status scoring without running the model
+      - name: Verify benchmark without running the model
         run: python -m unittest discover -s tests -p "test_*.py" -v

@@ -6,3 +6,5 @@ __pycache__/
 *.safetensors
 *.pt
 checkpoints/
+reports/
+*.local.bak
