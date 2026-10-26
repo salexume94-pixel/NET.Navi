@@ -95,7 +95,6 @@ Java_com_netnavi_mobile_NativeEngine_loadModel(JNIEnv * env, jobject, jstring jp
     if (path.empty()) return status(env, "ERROR: Model path is empty");
     llama_model_params mp = llama_model_default_params();
     mp.n_gpu_layers = 0; // documented CPU baseline for modest Android hardware
-    mp.use_mmap = true;
     model = llama_model_load_from_file(path.c_str(), mp);
     if (!model) return status(env, "ERROR: GGUF load failed or unsupported architecture");
     llama_context_params cp = llama_context_default_params();
