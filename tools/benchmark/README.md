@@ -41,3 +41,17 @@ Use `.\.venv\Scripts\python.exe -m unittest discover -s tests -p "test_*.py" -v`
 A previous 192-token trial produced **nine empty final answers out of ten thinking-mode requests**, each at 192 generated tokens. These were not proven reasoning failures: generation was likely consumed by thinking. The default budget is now **1024 tokens per request**, including thinking output. Use `--num-predict 2048` if the model still fails to finish, but note that this increases CPU time. The report records Ollama's `done_reason`, the length of its `thinking` field (not the reasoning text itself), `no_final_answers`, and `at_limit_no_final`.
 
 The report deliberately separates **strict accuracy** (correct answer in requested format) from **semantic accuracy** (including an arithmetic equation with the correct result). For example, `61 + 10 = 71` is content-correct but format-invalid when the prompt demands `71` alone. Blank answers are tracked separately from API errors. For apples-to-apples comparisons, don't mix old 192-token runs with the new 1024-token baseline.
+
+
+## Automatic failure triage and targeted retry
+
+Every completed or interrupted benchmark run now writes a human-readable triage report in its run folder, including category accuracy, P90 latency, mode disagreements, and failed responses. For a run created before this feature, generate its report **without running Qwen again**:
+
+    .\.venv\Scripts\python.exe tools\benchmark\analyze_results.py "reports\benchmark\20261026T051117302498Z"
+
+This creates triage.md and retry_thinking_case_ids.txt containing only thinking-mode requests that ended without a final answer at the generation cap. Review the report, then retry **only those cases** with a larger budget in a new run:
+
+    .\.venv\Scripts\python.exe tools\benchmark\run_suite.py --case-file "reports\benchmark\20261026T051117302498Z\retry_thinking_case_ids.txt" --modes on --num-predict 2048
+
+The retry preserves the existing benchmark data, does not retrain any model, and is a *different configuration* from the original 1024-token benchmark. Do not silently replace old results with new-budget results when comparing configurations. Results live only on the laptop, not on GitHub.
+

@@ -11,6 +11,7 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 from cases import Case, build_cases
+from analyze_results import write_triage
 
 BENCHMARK_VERSION = "v1.1-template-100"
 LABELS = {
@@ -188,11 +189,23 @@ def save_reports(out_dir: Path, records: list[dict], *, model: str,
             writer = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
             writer.writeheader()
             writer.writerows(records)
+    write_triage(out_dir)
     return summary
 
 def run(args: argparse.Namespace) -> int:
     cases = build_cases(seed=42)
-    cases = cases[:args.limit] if args.limit is not None else cases
+    case_file = getattr(args, "case_file", None)
+    if case_file:
+        identifiers = {line.strip() for line in Path(case_file).read_text(encoding="utf-8").splitlines() if line.strip()}
+        valid_ids = {c.case_id for c in cases}
+        unknown = identifiers - valid_ids
+        if unknown:
+            raise ValueError(f"Unknown case IDs in file: {sorted(unknown)}")
+        if not identifiers:
+            raise ValueError("Case file is empty")
+        cases = [c for c in cases if c.case_id in identifiers]
+    if args.limit is not None:
+        cases = cases[:args.limit]
     modes = ["off", "on"] if args.modes == "both" else [args.modes]
     out_dir = (Path(args.resume) if args.resume else
                Path(args.output_root) / dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%S%fZ"))
@@ -250,6 +263,8 @@ def run(args: argparse.Namespace) -> int:
         save_reports(out_dir, list(previous.values()), model=args.model,
                      modes=modes, selected_cases=cases)
         extra = f" --limit {args.limit}" if args.limit is not None else ""
+        if case_file:
+            extra += f' --case-file "{case_file}"'
         print(f'Interrupted. Resume: python tools/benchmark/run_suite.py --resume "{out_dir}" --modes {args.modes}{extra}')
         return 130
     summary = save_reports(out_dir, list(previous.values()), model=args.model,
@@ -269,6 +284,7 @@ def make_parser() -> argparse.ArgumentParser:
     p.add_argument("--host", default="http://127.0.0.1:11434")
     p.add_argument("--modes", choices=["off", "on", "both"], default="both")
     p.add_argument("--limit", type=int, default=None, help="First N shuffled cases for a quick trial")
+    p.add_argument("--case-file", default=None, help="Text file of case IDs to test (one per line)")
     p.add_argument("--timeout", type=int, default=120, help="Seconds per request")
     p.add_argument("--num-predict", type=int, default=1024, help="Max generated tokens per request (includes thinking)")
     p.add_argument("--output-root", default="reports/benchmark")
