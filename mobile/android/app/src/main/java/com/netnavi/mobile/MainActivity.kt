@@ -128,7 +128,7 @@ class MainActivity : Activity() {
         root.addView(controls)
 
         scroller = ScrollView(this).apply {
-            fillViewport = true
+            isFillViewport = true
             background = shape(PANEL, Color.rgb(34, 66, 78))
         }
         transcript = LinearLayout(this).apply {
