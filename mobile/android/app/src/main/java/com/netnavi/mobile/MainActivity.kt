@@ -16,6 +16,7 @@ import android.view.View
 import android.view.WindowInsets
 import android.widget.Button
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
@@ -134,7 +135,7 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setPadding(dp(10), dp(12), dp(10), dp(12))
         }
-        scroller.addView(transcript, ScrollView.LayoutParams(-1, -2))
+        scroller.addView(transcript, FrameLayout.LayoutParams(-1, -2))
         root.addView(scroller, LinearLayout.LayoutParams(-1, 0, 1f).apply {
             topMargin = dp(12); bottomMargin = dp(10)
         })
