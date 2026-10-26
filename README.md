@@ -11,4 +11,9 @@ NET.Navi is an offline-first, operator-controlled AI companion inspired by *Mega
 - [NET.Navi Research and Reference](docs/NETNAVI_REFERENCE.md) — franchise concepts, source references and real-world capability translations.
 - [Architecture and Engineering Roadmap](docs/ARCHITECTURE_AND_ROADMAP.md) — component boundaries, software interfaces, security controls, benchmark goals and implementation order.
 
-**Next milestone:** Audit existing Nora.EXE Pokémon learning systems, verify measurements, and extract transferable agent interfaces. No actual NET.Navi runtime is implemented yet.
+## Local Qwen evaluation
+
+- [Ollama benchmark smoke test](tools/benchmark/README.md) — local Qwen3-0.6B correctness and speed check, using only Python's standard library.
+- [Regression tests](tests/test_smoke_test.py) — deterministic offline checks for the scoring logic. GitHub Actions does not train or run Qwen.
+
+**Next milestone:** Expand the measured Qwen baseline with held-out evaluation cases while keeping Nora.EXE's Pokémon learning laboratory independent of the NET.Navi language model.
