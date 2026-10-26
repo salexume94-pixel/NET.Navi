@@ -1,0 +1,40 @@
+name: Android offline launcher
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "mobile/android/**"
+      - ".github/workflows/android-launcher.yml"
+  pull_request:
+    paths:
+      - "mobile/android/**"
+      - ".github/workflows/android-launcher.yml"
+
+jobs:
+  debug-apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: android-actions/setup-android@v4
+      - run: sdkmanager "platforms;android-35" "ndk;27.0.12077973" "cmake;3.22.1"
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "8.11.1"
+      - name: Pin llama.cpp engine
+        working-directory: mobile/android
+        run: bash scripts/bootstrap-llama.sh
+      - name: Build arm64 debug APK
+        working-directory: mobile/android
+        run: gradle --no-daemon :app:assembleDebug
+      - uses: actions/upload-artifact@v4
+        with:
+          name: netnavi-debug-apk
+          path: mobile/android/app/build/outputs/apk/debug/app-debug.apk
