@@ -29,7 +29,7 @@ The workflow `.github/workflows/android-launcher.yml` can build an APK artifact 
 1. Train or merge your Qwen model on the computer or Colab.
 2. Export it as **one compatible GGUF** (Q4_K_M is a sensible first CPU test); a .safetensors file, LoRA adapter, or Ollama tag is not a GGUF.
 3. Transfer that GGUF to Downloads on the phone.
-4. Open NET.Navi, choose **IMPORT GGUF**, select the file, and wait for copying to finish. Tap **LOAD MODEL** when prompted.
+4. Open NET.Navi, choose **IMPORT GGUF**, select the file, and let the launcher copy and automatically load the model. On future launches tap **LOAD MODEL**.
 5. Chat with airplane mode enabled to verify local-only operation.
 
 This application **does not download model weights** and no weights are committed to GitHub. A trained Qwen3-0.6B export must actually be Qwen3: the earlier sample script used `unsloth/Qwen2.5-0.5B-bnb-4bit`, a different base model.
