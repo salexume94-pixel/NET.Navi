@@ -4,6 +4,8 @@ on:
   push:
     paths:
       - "tools/benchmark/**"
+      - "core/**"
+      - "apps/desktop/**"
       - "tests/**"
       - "run-benchmark.cmd"
       - ".github/workflows/benchmark-tests.yml"
