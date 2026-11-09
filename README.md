@@ -29,4 +29,10 @@ ollama pull qwen3:0.6b
 python apps/desktop/netnavi_cli.py --backend local --model qwen3:0.6b --profile fast
 ```
 
-This is an inference and performance test shell, **not** the finished Android PET, memory system, skill executor or independent learning core.
+This remains a text-only prototype, **not** the finished Android PET, skill executor or independent learning core.
+
+## User-controlled local memory
+
+NET.Navi now stores explicitly saved facts and preferences in local SQLite across restarts. Use `/remember`, `/prefer`, `/memories`, `/edit`, `/forget`, and `/export-memories` in the desktop CLI. [Memory setup, controls and privacy](docs/LOCAL_MEMORY.md).
+
+Saved notes are not shared with the cloud without `--share-memory-with-cloud`, and local/cloud conversation histories stay separate. These are plaintext notes, **not trained model weights or encrypted storage**.

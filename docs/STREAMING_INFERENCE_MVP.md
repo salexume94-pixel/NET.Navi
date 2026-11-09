@@ -33,11 +33,11 @@ For opt-in stronger reasoning through OpenAI's Responses API, set your API key *
 
 ```powershell
 $env:OPENAI_API_KEY = Read-Host 'API key'
-$env:NETNAVI_CLOUD_MODEL = 'gpt-6.1-sol'  # requires API model access; charges apply
+$env:NETNAVI_CLOUD_MODEL = 'REPLACE_WITH_YOUR_AVAILABLE_MODEL_ID'  # choose an API model you can access
 python apps/desktop/netnavi_cli.py --backend cloud --profile balanced
 ```
 
-'--backend hybrid' explicitly authorizes network routing for more demanding messages. It routes short messages locally, and certain longer/coding/analysis prompts to the cloud. The chosen backend is displayed **before** content is sent. Simple keyword routing can misclassify tasks. For sensitive messages, choose '--backend local', never hybrid. Neither cloud nor hybrid is enabled by default. Cloud responses are requested with 'store: false' (this is not a guarantee of zero provider-side retention; consult the provider's terms). No local files or memories are sent automatically.
+'--backend hybrid' explicitly authorizes network routing for more demanding messages. It routes short messages locally, and certain longer/coding/analysis prompts to the cloud. The chosen backend is displayed **before** content is sent. Simple keyword routing can misclassify tasks. For sensitive messages, choose '--backend local', never hybrid. Neither cloud nor hybrid is enabled by default. Cloud responses are requested with 'store: false' (this is not a guarantee of zero provider-side retention; consult the provider's terms). Saved memories are **never** included in cloud prompts unless you add '--share-memory-with-cloud'. Local and cloud conversation histories are separate to prevent prior local answers from accidentally disclosing memory in later cloud calls. See [local memory](LOCAL_MEMORY.md).
 
 One-shot commands:
 
@@ -56,7 +56,7 @@ python -m unittest discover -s tests -p 'test_*.py' -v
 - Streams visible text as it arrives and displays time to **first visible text** and total wall-clock latency. Deep thinking may delay first visible text while internal reasoning is generated. Neither number is a promise on the target device.
 - 'keep_alive: 10m' avoids repeated Ollama model reloads for interactive use but keeps memory occupied for that duration. Context is trimmed to recent complete turns by character count (a rough approximation, not exact token accounting).
 - 'num_predict' and 'max_output_tokens' prevent unlimited output, and requests have socket timeouts. Total wall-clock deadlines and per-device performance benchmarks still need engineering.
-- The console uses an in-memory session: '/clear' resets it. It does not persist chat history, implement secure memories, access files or programs, or execute tool calls.
+- The console retains recent chat history only in process memory; '/clear' resets it. User-selected facts and preferences are persisted separately as **unencrypted** SQLite notes with explicit commands. It does not persist whole chats, access files/programs as tools, or execute model-proposed actions. See [local memory](LOCAL_MEMORY.md).
 - HTTP failures, incomplete streams, and blank answers produce errors rather than fabricated success. Ctrl+C cancels a running request and does not commit an incomplete answer to the session.
 - Local inference is restricted to the loopback Ollama API to avoid silently transferring private prompts elsewhere. Cloud credentials stay in environment variables. They must not be logged or committed.
 
@@ -64,5 +64,5 @@ python -m unittest discover -s tests -p 'test_*.py' -v
 
 1. Run the existing **frozen** 100-case benchmark with each candidate local model and thinking mode; do not train on the evaluation set.
 2. Run representative one-shot and conversation tests; record time to first text, complete response, correctness, and memory consumption. Benchmark cold vs warm runs and compare different 'keep_alive' values.
-3. Implement persistent *editable* SQLite memory with provenance and an independent security supervisor before any skills are allowed. Then build the Android PET UI and permission controls.
+3. Extend the implemented explicit SQLite notes with richer provenance, validated relevance and optional user-controlled backup/import. Build the **independent security supervisor** before any model-proposed skills. Then the Android PET UI and permission controls.
 4. Do not treat cloud-model quality as proof that the local model has become more intelligent. Quantify costs and measure performance against agreed tasks.
