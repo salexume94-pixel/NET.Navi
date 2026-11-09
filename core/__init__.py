@@ -1,0 +1,1 @@
+"""NET.Navi core package."""

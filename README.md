@@ -3,7 +3,7 @@ Welcome to MMBN
 
 ## Project direction
 
-NET.Navi is an offline-first, operator-controlled AI companion inspired by *Mega Man Battle Network*. The goal is a recognizable personal Navi with local intelligence, persistent user-managed memory, an original PET-style interface, authorized skill chips and measured, controlled learning. This repository is in the **planning phase**, not a complete assistant.
+NET.Navi is an offline-first, operator-controlled AI companion inspired by *Mega Man Battle Network*. The goal is a recognizable personal Navi with local intelligence, persistent user-managed memory, an original PET-style interface, authorized skill chips and measured, controlled learning. This repository has a **first desktop streaming-chat prototype**, but is not yet a complete assistant.
 
 ## Project documents
 
@@ -18,3 +18,15 @@ NET.Navi is an offline-first, operator-controlled AI companion inspired by *Mega
 - [Regression tests](tests/test_smoke_test.py) — deterministic offline checks for the scoring logic. GitHub Actions does not train or run Qwen.
 
 **Next milestone:** Run the frozen baseline locally, review failures, and develop a **separate** training dataset without leaking evaluation questions into training. The Nora.EXE Pokémon laboratory remains independent of NET.Navi's language model.
+
+## Streaming chat prototype
+
+- [Run NET.Navi locally or with opt-in cloud reasoning](docs/STREAMING_INFERENCE_MVP.md): fast/balanced/deep profiles, streamed answers, explicit backend choice and first-visible-text timing.
+- Local-only by default; stronger cloud reasoning requires explicit `--backend cloud` or `--backend hybrid` and API credentials.
+
+```powershell
+ollama pull qwen3:0.6b
+python apps/desktop/netnavi_cli.py --backend local --model qwen3:0.6b --profile fast
+```
+
+This is an inference and performance test shell, **not** the finished Android PET, memory system, skill executor or independent learning core.
