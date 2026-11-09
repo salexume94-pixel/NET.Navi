@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 import sys
 
-# Run as 'python apps/desktop/netnavi_cli.py' without installation.
+# Run as `python apps/desktop/netnavi_cli.py` without installation.
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from core.inference.runtime import (InferenceError, SYSTEM_INSTRUCTIONS,
                                     bounded_messages, generate, select_route)
